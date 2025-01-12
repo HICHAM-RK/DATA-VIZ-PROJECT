@@ -3,18 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netflix Summary</title>
+    <title>Netflix Data Visualization</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <h1>Welcome to Your Netflix Summary</h1>
+    <header>
+        <h1>Netflix Data Visualization</h1>
+        <p>Explore the trends and insights from Netflix data</p>
+        <select id="year-filter">
+            <option value="">Select a Year</option>
+        </select>
+    </header>
+    <div id="visualization-container"></div>
+    <div id="line-chart-container">
+        <h2>Release Year vs. Content Type</h2>
     </div>
-
- 
-
+    <footer>
+        <p>&copy; 2025 Netflix Data Visualizations</p>
+    </footer>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

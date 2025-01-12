@@ -1,51 +1,61 @@
-/* Basic styling */
-body {
-    font-family: Arial, sans-serif;
+/* Reset default styles */
+* {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
-    overflow: hidden;
+    box-sizing: border-box;
 }
 
-/* Loading screen */
-#loading-screen {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* Basic body styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 20px;
+}
+
+/* Header styling */
+header {
     text-align: center;
-    font-size: 1.5em;
+    margin-bottom: 40px;
 }
 
-.spinner {
-    border: 4px solid #f3f3f3; /* Light gray */
-    border-top: 4px solid #3498db; /* Blue */
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 2s linear infinite;
-    margin-bottom: 20px;
+header h1 {
+    font-size: 2.5em;
+    color: #333;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+header p {
+    font-size: 1.2em;
+    color: #666;
 }
 
-/* Main content */
-#main-content {
-    padding: 20px;
+/* Container for visualizations */
+#visualization-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 30px;
+    margin-top: 30px;
+    width: 100%;
+    height: 600px;
 }
 
-.insight {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    margin: 10px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+/* Footer styling */
+footer {
+    text-align: center;
+    margin-top: 50px;
+    font-size: 1em;
+    color: #777;
+}
+/* Line Chart Container */
+#line-chart-container {
+    width: 100%;
+    height: 500px;
+    margin-top: 50px;
+    text-align: center;
+}
+
+#line-chart-container svg {
+    display: block;
+    margin: 0 auto;
 }
