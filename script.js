@@ -82,7 +82,14 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
 
         svg.append("g")
             .call(d3.axisLeft(y));
-
+        svg.append("text")
+            .attr("x", width / 2)
+            .attr("y", 1) 
+            .attr("text-anchor", "middle")
+            .style("font-size", "18px")
+            .style("font-weight", "bold")
+            .text("Distribution of Movies and TV Shows");
+                
         // Tooltip functionality
         const tooltip = d3.select("body").append("div")
             .attr("class", "tooltip")
@@ -133,6 +140,17 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
             .text(function(d) { 
                 return d3.format(".1f")(contentPercentages[d[0]]) + "%"; 
             });
+// Tooltip element
+    const tooltip2 = d3.select("#line-chart-container")
+    
+    .append("div")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .style("background", "white")
+    .style("border", "1px solid #ccc")
+    .style("padding", "8px")
+    .style("border-radius", "4px")
+    .style("font-size", "12px");
 
         // Second chart - Genre Distribution
         const genreCounts = {};
@@ -178,7 +196,14 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
 
         svg2.append("g")
             .call(d3.axisLeft(y2));
-
+        svg2.append("text")
+            .attr("x", width2 / 2)
+            .attr("y", -7) 
+            .attr("text-anchor", "middle")
+            .style("font-size", "18px")
+            .style("font-weight", "bold")
+            .text("Distribution of Content by Genre");
+        
         svg2.selectAll(".bar")
             .data(Object.entries(genreCounts))
             .enter().append("rect")
@@ -235,6 +260,7 @@ function updateLineChart(data) {
         } else if (type === "TV Show") {
             yearlyCounts[year]["TV Show"]++;
         }
+        
     });
 
     // Sort years to ensure the line chart is displayed correctly
@@ -255,6 +281,14 @@ function updateLineChart(data) {
         .append("g")
         .attr("transform", `translate(${margin.left},${margin.top})`);
 
+// Add the chart title
+svg.append("text")
+    .attr("x", width / 2)
+    .attr("y", -8) // Adjust this value for positioning
+    .attr("text-anchor", "middle")
+    .style("font-size", "16px")
+    .style("font-weight", "bold")
+    .text("Release Year vs. Content Type");        
     // Scales
     const x = d3.scaleLinear()
         .domain(d3.extent(sortedData, d => d.year))
@@ -299,24 +333,49 @@ function updateLineChart(data) {
         .attr("d", lineTVShow);
 
     // Add points for movies
-    svg.selectAll(".dot-movie")
-        .data(sortedData)
-        .enter().append("circle")
-        .attr("class", "dot-movie")
-        .attr("cx", d => x(d.year))
-        .attr("cy", d => y(d.Movie))
-        .attr("r", 4)
-        .attr("fill", "red");
+// Add points for movies with tooltip
+svg.selectAll(".dot-movie")
+    .data(sortedData)
+    .enter().append("circle")
+    .attr("class", "dot-movie")
+    .attr("cx", d => x(d.year))
+    .attr("cy", d => y(d.Movie))
+    .attr("r", 4)
+    .attr("fill", "red")
+    .on("mouseover", function (event, d) {
+        tooltip2.style("visibility", "visible")
+            .text(`Year: ${d.year}, Movies: ${d.Movie}`);
+    })
+    .on("mousemove", function (event) {
+        tooltip2.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+    })
+    .on("mouseout", function () {
+        tooltip2.style("visibility", "hidden");
+    });
+
 
     // Add points for TV shows
-    svg.selectAll(".dot-tvshow")
-        .data(sortedData)
-        .enter().append("circle")
-        .attr("class", "dot-tvshow")
-        .attr("cx", d => x(d.year))
-        .attr("cy", d => y(d["TV Show"]))
-        .attr("r", 4)
-        .attr("fill", "blue");
+// Add points for TV shows with tooltip
+svg.selectAll(".dot-tvshow")
+    .data(sortedData)
+    .enter().append("circle")
+    .attr("class", "dot-tvshow")
+    .attr("cx", d => x(d.year))
+    .attr("cy", d => y(d["TV Show"]))
+    .attr("r", 4)
+    .attr("fill", "blue")
+    .on("mouseover", function (event, d) {
+        tooltip2.style("visibility", "visible")
+            .text(`Year: ${d.year}, TV Shows: ${d["TV Show"]}`);
+    })
+    .on("mousemove", function (event) {
+        tooltip2.style("top", (event.pageY - 10) + "px")
+            .style("left", (event.pageX + 10) + "px");
+    })
+    .on("mouseout", function () {
+        tooltip2.style("visibility", "hidden");
+    });
 
     // Add labels for axes
     svg.append("text")
@@ -333,6 +392,7 @@ function updateLineChart(data) {
         .attr("y", -margin.left + 20)
         .style("font-size", "14px")
         .text("Count");
+        
 
     // Legend
     const legend = svg.append("g")

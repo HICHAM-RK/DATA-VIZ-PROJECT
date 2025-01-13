@@ -14,14 +14,34 @@
             <option value="">Select a Year</option>
         </select>
     </header>
-    <div id="visualization-container"></div>
-    <div id="line-chart-container">
-        <h2>Release Year vs. Content Type</h2>
+
+    <!-- Visualization Container: Includes first two charts -->
+    <div id="visualization-container">
+        <div id="chart1-container">
+            <h3>Distribution of Movies and TV Shows</h3>
+            <div id="chart1"></div>
+        </div>
+
+        <div id="chart2-container">
+            <h3 >Distribution of Content by Genre</h3>
+            <div id="chart2"></div>
+        </div>
     </div>
+
+    <!-- Line Chart Container: Third chart -->
+    <div id="line-chart-container">
+        <h3>Movies and TV Shows Released by Year</h3>
+        <div id="chart3"></div>
+    </div>
+    <div id="tooltip" style="position: absolute; visibility: hidden; background-color: #fff; border: 1px solid #ccc; padding: 5px; border-radius: 4px;"></div>
+    <div id="chart-container"></div>
     <footer>
         <p>&copy; 2025 Netflix Data Visualizations</p>
     </footer>
+
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="script.js"></script>
+    <script src="rating.js"></script>
+
 </body>
 </html>
