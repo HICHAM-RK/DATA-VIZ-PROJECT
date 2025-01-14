@@ -444,4 +444,3 @@ updateLineChart(data);
 .catch(function(error) {
     console.error("Error loading the CSV file:", error);
 });
-
