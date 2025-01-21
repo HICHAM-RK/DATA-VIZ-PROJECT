@@ -1,10 +1,21 @@
 d3.dsv(";", "netflix_titles.csv").then(function(data) {
+    const ratingDescriptions = {
+        "G": "General audiences – All ages admitted.",
+        "PG": "Parental guidance suggested – Some material may not be suitable for children.",
+        "PG-13": "Parents strongly cautioned – Some material may be inappropriate for children under 13.",
+        "R": "Restricted – Under 17 requires accompanying parent or adult guardian.",
+        "NC-17": "Adults only – No one 17 and under admitted.",
+        "TV-Y": "Suitable for all children.",
+        "TV-Y7": "Suitable for older children (ages 7 and up).",
+        "TV-G": "General audience – Suitable for all ages.",
+        "TV-PG": "Parental guidance suggested – May contain some material unsuitable for younger children.",
+        "TV-14": "Parents strongly cautioned – May not be suitable for children under 14.",
+        "TV-MA": "Mature audience only – May not be suitable for children under 17."
+    };
+
     const ratingCounts = {};
     const years = new Set();
-    const validRatings = new Set([
-        "G", "NC-17", "NR", "PG", "PG-13", "R", 
-        "TV-14", "TV-G", "TV-MA", "TV-PG", "TV-Y", "TV-Y7"
-    ]);
+    const validRatings = new Set(Object.keys(ratingDescriptions));
 
     data.forEach(function(d) {
         let rating = d['rating'];
@@ -104,7 +115,11 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
             .attr("fill", "#69b3a2")
             .on("mouseover", function(event, d) {
                 tooltip.style("display", "block")
-                    .html(`<strong>Rating:</strong> ${d.label}<br><strong>Count:</strong> ${d.value}`);
+                    .html(
+                        `<strong>Rating:</strong> ${d.label}<br>` +
+                        `<strong>Count:</strong> ${d.value}<br>` +
+                        `<strong>Description:</strong> ${ratingDescriptions[d.label]}`
+                    );
             })
             .on("mousemove", function(event) {
                 tooltip.style("left", (event.pageX + 10) + "px")
@@ -136,13 +151,14 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
             .attr("text-anchor", "middle")
             .style("font-size", "12px")
             .text(function(d) { return d.value; });
+
         svg.append("text")
             .attr("x", width / 2)
-            .attr("y", -3) // Adjust this value for positioning
+            .attr("y", -3)
             .attr("text-anchor", "middle")
             .style("font-size", "16px")
             .style("font-weight", "bold")
-            .text("Content Rating Analysis");      
+            .text("Content Rating Analysis");
     }
 
     renderBarChart(data);

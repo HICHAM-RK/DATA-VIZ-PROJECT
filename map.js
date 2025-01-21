@@ -93,7 +93,7 @@ function countTitlesByCountry(data, year) {
       .style("position", "absolute")
       .style("visibility", "hidden")
       .style("background", "white")
-      .style("padding", "5px")
+      .style("padding", "1px")
       .style("border", "1px solid black")
       .style("border-radius", "5px");
   
@@ -116,7 +116,7 @@ function countTitlesByCountry(data, year) {
         tooltip.style("visibility", "hidden");
         d3.select(this).attr("fill", d => {
           const countryName = d.properties.name;
-          return countryData[countryName] ? colorScale(countryData[countryName]) : "#d3d3d3"; // Neutral gray for countries with 0 titles
+          return countryData[countryName] ? colorScale(countryData[countryName]) : "#d3d3d3"; 
         });
       });
   }

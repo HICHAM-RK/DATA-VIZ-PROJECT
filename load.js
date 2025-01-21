@@ -5,6 +5,6 @@ window.onload = function () {
   
       // Show the main content
       document.getElementById("main-content").style.display = "block";
-    }, 2000); // 
+    }, 1000); // 
   };
   
