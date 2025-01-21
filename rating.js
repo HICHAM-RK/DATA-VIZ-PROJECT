@@ -27,7 +27,15 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
     });
 
     const yearFilter = document.getElementById("year-filter");
-    years.forEach(function(year) {
+
+    // Convert the set to an array, cast to numbers, and sort
+    const sortedYears = Array.from(years)
+        .map(year => parseInt(year, 10)) // Ensure years are integers
+        .filter(year => !isNaN(year))   // Remove invalid years
+        .sort((a, b) => a - b);         // Sort numerically
+    
+    // Append the sorted years to the dropdown
+    sortedYears.forEach(function(year) {
         const option = document.createElement("option");
         option.value = year;
         option.textContent = year;

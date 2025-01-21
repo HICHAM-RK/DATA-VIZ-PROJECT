@@ -1,16 +1,18 @@
 // Load the dataset with semicolon delimiter (since your data uses semicolons)
 d3.dsv(";", "netflix_titles.csv").then(function(data) {
     // Extract the unique years for the year filter
-    const years = [...new Set(data.map(d => new Date(d.release_year).getFullYear()))];
-
-    // Populate the year filter dropdown with options
     const yearSelect = d3.select("#year-filter");
+
+    // Extract unique years from the data and sort them
+    const uniqueYears = Array.from(new Set(data.map(d => d.year))).sort((a, b) => a - b);
+    
+    // Populate the dropdown with sorted years
     yearSelect.selectAll("option")
-        .data(years)
-        .enter().append("option")
+        .data(uniqueYears)
+        .enter()
+        .append("option")
         .attr("value", d => d)
         .text(d => d);
-
     // Filter the data based on the selected year
     function filterDataByYear(year) {
         return data.filter(d => new Date(d.release_year).getFullYear() === year);
@@ -162,12 +164,13 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
                     genre = genre.trim();
                     if (genreCounts[genre]) {
                         genreCounts[genre]++;
-                    } else {
+                    } else {    
                         genreCounts[genre] = 1;
                     }
                 });
             }
         });
+        const sortedGenreCounts = Object.entries(genreCounts).sort((a, b) => b[1] - a[1]);
 
         const margin2 = {top: 20, right: 38, bottom: 60, left: 150};
         const width2 = 800 - margin2.left - margin2.right;
@@ -180,15 +183,37 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
             .append("g")
             .attr("transform", "translate(" + margin2.left + "," + margin2.top + ")");
 
+                
         const x2 = d3.scaleLinear()
-            .domain([0, d3.max(Object.values(genreCounts))])
+            .domain([0, d3.max(sortedGenreCounts, d => d[1])])
             .nice()
             .range([0, width2]);
 
         const y2 = d3.scaleBand()
-            .domain(Object.keys(genreCounts))
+            .domain(sortedGenreCounts.map(d => d[0]))
             .range([0, height2])
             .padding(0.1);
+
+
+// Genre Tooltip element
+const genreTooltip = d3.select("body")
+    .append("div")
+    .attr("id", "genreTooltip")
+    .style("display", "none")
+    .style("position", "absolute")
+    .style("background-color", "#f9f9f9")
+    .style("border", "1px solid #ccc")
+    .style("padding", "5px")
+    .style("pointer-events", "none")
+    .style("z-index", "10")
+    .style("font-size", "12px")
+    .style("color", "black")
+    .style("border-radius", "4px")
+    .style("box-shadow", "0px 2px 4px rgba(0, 0, 0, 0.2)");
+
+
+
+
 
         svg2.append("g")
             .attr("transform", "translate(0," + height2 + ")")
@@ -204,37 +229,45 @@ d3.dsv(";", "netflix_titles.csv").then(function(data) {
             .style("font-weight", "bold")
             .text("Distribution of Content by Genre");
         
-        svg2.selectAll(".bar")
-            .data(Object.entries(genreCounts))
-            .enter().append("rect")
-            .attr("class", "bar")
-            .attr("x", 0)
-            .attr("y", function(d) { return y2(d[0]); })
-            .attr("width", function(d) { return x2(d[1]); })
-            .attr("height", y2.bandwidth())
-            .attr("fill", "#4CAF50")
-            .attr("stroke", "#333")
-            .attr("stroke-width", 2)
-            .transition()  // Apply transition
-            .duration(800)  // Set duration for the transition
-            .ease(d3.easeBounceOut); // Set easing function
-
-        svg2.selectAll(".percentage")
-            .data(Object.entries(genreCounts))
-            .enter().append("text")
-            .attr("class", "percentage")
-            .attr("x", function(d) { 
-                return x2(d[1]) + 10;
-            })
-            .attr("y", function(d) { return y2(d[0]) + y2.bandwidth() / 2; })
-            .attr("dy", ".35em")
-            .style("fill", "black")
-            .style("font-size", "14px")
-            .style("text-anchor", "start")
-            .text(function(d) { 
-                return d3.format(".1f")(d[1] / total * 100) + "%"; 
-            });
-
+// Bars with tooltip
+svg2.selectAll(".bar")
+    .data(sortedGenreCounts)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", 0)
+    .attr("y", function(d) { return y2(d[0]); })
+    .attr("width", function(d) { return x2(d[1]); })
+    .attr("height", y2.bandwidth())
+    .attr("fill", "#4CAF50")
+    .attr("stroke", "#333")
+    .attr("stroke-width", 2)
+    .on("mouseover", function(event, d) {
+        genreTooltip.style("display", "block")
+            .html(`<strong>${d[0]}</strong>: ${d[1]} movies`);
+        d3.select(this).attr("fill", "#45A049"); // Highlight bar
+    })
+    .on("mousemove", function(event) {
+        genreTooltip.style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 20) + "px");
+    })
+    .on("mouseout", function() {
+        genreTooltip.style("display", "none");
+        d3.select(this).attr("fill", "#4CAF50"); // Reset bar color
+    });
+            
+// Percentage labels
+const sumgen = d3.sum(sortedGenreCounts, d => d[1]);
+svg2.selectAll(".percentage")
+    .data(sortedGenreCounts)
+    .enter().append("text")
+    .attr("class", "percentage")
+    .attr("x", function(d) { return x2(d[1]) + 10; })
+    .attr("y", function(d) { return y2(d[0]) + y2.bandwidth() / 2; })
+    .attr("dy", ".35em")
+    .style("fill", "black")
+    .style("font-size", "14px")
+    .style("text-anchor", "start")
+    .text(function(d) { return d3.format(".1f")(d[1] / sumgen * 100) + "%"; });
         // Animate bar update for year change
         svg.selectAll(".bar")
             .transition()
