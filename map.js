@@ -11,8 +11,8 @@ const svg = d3.select("#netflix_map")
 
 // Load the Netflix data and world map data
 Promise.all([
-    d3.dsv(";", "netflix_titles.csv"), // Ensure the correct path to the CSV file
-    d3.json("world_map.json")      // Ensure the correct path to the JSON file
+    d3.dsv(";", "netflix_titles.csv"), 
+    d3.json("world_map.json")      
 ]).then(([netflixData, worldMap]) => {
   console.log("Netflix Data:", netflixData); // Debug log
   console.log("World Map Data:", worldMap); // Debug log
@@ -33,7 +33,7 @@ Promise.all([
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("fill", "lightgray") // Default color for countries with no data
+    .attr("fill", "lightgray") 
     .attr("stroke", "white")
     .attr("stroke-width", 0.5);
 

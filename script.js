@@ -457,7 +457,7 @@ svg.selectAll(".dot-tvshow")
 }
 
 // Add a container for the line chart in your HTML
-// <div id="line-chart-container"></div>
+
 
 // Call the line chart function with the filtered data
 updateLineChart(data);
